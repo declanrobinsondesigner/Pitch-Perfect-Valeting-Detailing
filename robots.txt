@@ -1,0 +1,4 @@
+# DEMO: remove at launch
+User-agent: *
+Allow: /
+Sitemap: https://pitch-perfect-valeting.declanrobinson.co.uk/sitemap.xml
