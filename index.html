@@ -2,6 +2,14 @@
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
+  <script>
+    (function () {
+      var ios =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+      if (ios) document.documentElement.classList.add("ios");
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=overlays-content">
   <!-- DEMO: remove at launch -->
   <meta name="robots" content="noindex, nofollow">
@@ -32,7 +40,7 @@
   <link rel="preload" as="image" href="/media/hero-desktop-vw-transporter.jpg" media="(min-width: 900px)" fetchpriority="high">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Nunito+Sans:wght@400;700&display=swap" media="print" onload="this.media='all'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,800;0,900;1,800;1,900&family=Nunito+Sans:wght@400;700&display=swap"></noscript>
-  <link rel="stylesheet" href="/styles.css?v=17">
+  <link rel="stylesheet" href="/styles.css?v=18">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -458,6 +466,6 @@
     </div>
   </div>
 
-  <script src="/main.js?v=6"></script>
+  <script src="/main.js?v=7"></script>
 </body>
 </html>

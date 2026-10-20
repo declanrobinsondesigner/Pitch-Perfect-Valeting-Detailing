@@ -55,9 +55,8 @@ body {
     padding-bottom: calc(var(--sticky-bar-h) + env(safe-area-inset-bottom, 0px));
   }
 
-  /* iPhone: reserve space for slim bar + lift above Safari bottom island (not safe-area on the bar itself) */
-  html.ios-sticky-pin body {
-    padding-bottom: calc(var(--sticky-bar-h) + var(--sticky-vv-offset, 0px));
+  html.ios body {
+    padding-bottom: 0;
   }
 }
 
@@ -1044,7 +1043,7 @@ ul {
   color: var(--silver);
 }
 
-/* Sticky bar — one fixed-height row (no extra safe-area padding on iPhone; that was doubling the band) */
+/* Sticky bar — touch phones except iPhone (Safari bottom island fights fixed footers) */
 .sticky-bar {
   display: none;
   position: fixed;
@@ -1067,23 +1066,6 @@ ul {
     padding-bottom: env(safe-area-inset-bottom, 0px);
     height: calc(var(--sticky-bar-h) + env(safe-area-inset-bottom, 0px));
     max-height: calc(var(--sticky-bar-h) + env(safe-area-inset-bottom, 0px));
-  }
-}
-
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 767px) {
-    html.ios .sticky-bar {
-      padding-bottom: 0;
-      height: var(--sticky-bar-h);
-      max-height: var(--sticky-bar-h);
-    }
-
-    html.ios-sticky-pin .sticky-bar {
-      bottom: var(--sticky-vv-offset, 0px);
-      transform: translate3d(0, 0, 0);
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
-    }
   }
 }
 
@@ -1479,5 +1461,9 @@ ul {
 @media (max-width: 767px) {
   .sticky-bar {
     display: block;
+  }
+
+  html.ios .sticky-bar {
+    display: none !important;
   }
 }
