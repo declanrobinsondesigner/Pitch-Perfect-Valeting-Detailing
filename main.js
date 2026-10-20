@@ -46,7 +46,7 @@
       var root = document.documentElement;
 
       if (!mobileMq.matches) {
-        root.classList.remove("ios-sticky-pin", "ios-sticky-flush");
+        root.classList.remove("ios-sticky-pin");
         root.style.removeProperty("--sticky-vv-offset");
         lastOffset = -1;
         return;
@@ -59,7 +59,6 @@
       if (offset === lastOffset) return;
       lastOffset = offset;
       root.style.setProperty("--sticky-vv-offset", offset + "px");
-      root.classList.toggle("ios-sticky-flush", offset === 0);
     }
 
     function schedulePin() {
