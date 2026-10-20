@@ -17,14 +17,65 @@
     });
   }
 
-  if (window.matchMedia("(max-width: 767px)").matches) {
-    document.body.classList.add("has-sticky-bar");
-  }
-  window
-    .matchMedia("(max-width: 767px)")
-    .addEventListener("change", function (e) {
-      document.body.classList.toggle("has-sticky-bar", e.matches);
-    });
+  /*
+   * iPhone Safari: pin the sticky bar to the visual viewport bottom so it sits
+   * above the bottom tab / search island (not the layout viewport, which resizes).
+   */
+  (function () {
+    var stickyBar = document.querySelector(".sticky-bar");
+    if (!stickyBar || !window.visualViewport) return;
+
+    var isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+    if (!isIOS) return;
+
+    var mobileMq = window.matchMedia("(max-width: 767px)");
+    var rafId = 0;
+    var lastOffset = -1;
+
+    function visualBottomInset() {
+      var vv = window.visualViewport;
+      var inset = window.innerHeight - vv.offsetTop - vv.height;
+      if (inset < 0) inset = 0;
+      return Math.round(inset);
+    }
+
+    function pinBar() {
+      rafId = 0;
+      var root = document.documentElement;
+
+      if (!mobileMq.matches) {
+        root.classList.remove("ios-sticky-pin", "ios-sticky-flush");
+        root.style.removeProperty("--sticky-vv-offset");
+        lastOffset = -1;
+        return;
+      }
+
+      root.classList.add("ios");
+      root.classList.add("ios-sticky-pin");
+
+      var offset = visualBottomInset();
+      if (offset === lastOffset) return;
+      lastOffset = offset;
+      root.style.setProperty("--sticky-vv-offset", offset + "px");
+      root.classList.toggle("ios-sticky-flush", offset === 0);
+    }
+
+    function schedulePin() {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(pinBar);
+    }
+
+    window.visualViewport.addEventListener("resize", schedulePin);
+    window.visualViewport.addEventListener("scroll", schedulePin);
+    window.addEventListener("scroll", schedulePin, { passive: true });
+    window.addEventListener("resize", schedulePin);
+    window.addEventListener("orientationchange", schedulePin);
+    window.addEventListener("pageshow", schedulePin);
+    mobileMq.addEventListener("change", schedulePin);
+    schedulePin();
+  })();
 
   document.querySelectorAll(".ba-slider").forEach(function (slider) {
     var range = slider.querySelector('input[type="range"]');

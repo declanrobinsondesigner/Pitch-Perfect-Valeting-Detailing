@@ -20,6 +20,7 @@
   --pad-x: 24px;
   --section-pad: 80px;
   --radius: 4px;
+  --sticky-bar-h: 48px;
   --font-body: "Nunito Sans", sans-serif;
   --font-display: "Exo 2", sans-serif;
 }
@@ -49,8 +50,22 @@ body {
   background: var(--bg);
 }
 
-body.has-sticky-bar {
-  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+@media (max-width: 767px) {
+  body {
+    padding-bottom: calc(var(--sticky-bar-h) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* iOS Safari: avoid 100vh-style page jumps when the bottom tab / search island resizes */
+@supports (-webkit-touch-callout: none) {
+  html.ios {
+    height: -webkit-fill-available;
+  }
+
+  html.ios body {
+    min-height: 100%;
+    min-height: -webkit-fill-available;
+  }
 }
 
 img {
@@ -1036,7 +1051,7 @@ ul {
   color: var(--silver);
 }
 
-/* Sticky bar */
+/* Sticky bar — fixed pixel height; safe area as padding only */
 .sticky-bar {
   display: none;
   position: fixed;
@@ -1044,9 +1059,39 @@ ul {
   right: 0;
   bottom: 0;
   z-index: 200;
-  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  box-sizing: border-box;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background: var(--link);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* iPhone Safari: sit above bottom tab bar / search island (offset from visualViewport) */
+@supports (-webkit-touch-callout: none) {
+  .sticky-bar {
+    padding-bottom: constant(safe-area-inset-bottom);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  @media (max-width: 767px) {
+    html.ios-sticky-pin .sticky-bar {
+      bottom: var(--sticky-vv-offset, 0px);
+      left: 0;
+      right: 0;
+      width: 100%;
+      max-width: 100%;
+      padding-bottom: 0;
+      transform: translate3d(0, 0, 0);
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+    }
+
+    /* Home indicator when flush with the screen; skip when sitting above Safari’s bottom island */
+    html.ios-sticky-pin.ios-sticky-flush .sticky-bar {
+      padding-bottom: constant(safe-area-inset-bottom);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+    }
+  }
 }
 
 .sticky-bar a {
@@ -1054,23 +1099,30 @@ ul {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   color: #fff;
   font-weight: 700;
   text-decoration: none;
-  min-height: 56px;
-  font-size: 15px;
+  height: var(--sticky-bar-h);
+  min-height: var(--sticky-bar-h);
+  max-height: var(--sticky-bar-h);
+  font-size: 14px;
+  line-height: 1.2;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .sticky-bar a svg {
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
   fill: currentColor;
 }
 
 .sticky-bar-inner {
   display: flex;
-  height: 56px;
+  height: var(--sticky-bar-h);
+  min-height: var(--sticky-bar-h);
+  max-height: var(--sticky-bar-h);
 }
 
 .sticky-divider {
